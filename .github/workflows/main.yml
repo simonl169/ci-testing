@@ -31,11 +31,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
-      - name: Bump version
-         
-        run: |
-          chmod +x ./pump-server.sh
-          pump-server.sh -s "${{ inputs.serverBump }}"
+      - name: Bump version         
+        run: ./pump-server.sh -s "${{ inputs.serverBump }}"
       - name: Commit and tag
         id: push-tag
         uses: EndBug/add-and-commit@v9
