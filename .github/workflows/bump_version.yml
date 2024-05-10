@@ -1,4 +1,4 @@
-name: Test creating new release
+name: Bump Version and Commit to main
 
 on:
   workflow_dispatch:
@@ -9,9 +9,10 @@ on:
         default: 'false'
         type: choice
         options:
-          - 'false'
+          - 'False'
           - minor
           - patch
+          - major
 
 
 concurrency:
@@ -31,15 +32,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
-      - name: Bump version         
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12' # install the python version needed
+
+      - name: install python packages
         run: |
-          chmod +x ./pump-server.sh
-          ./pump-server.sh -s "${{ inputs.serverBump }}"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Bump version
+        run: python test.py --server="${{ inputs.serverBump }}"
+
       - name: Commit and tag
         id: push-tag
         uses: EndBug/add-and-commit@v9
         with:
           author_name: Simon_Bot
-          message: 'Version ${{ env.IMMICH_VERSION }}'
-          tag: ${{ env.IMMICH_VERSION }}
+          message: 'Version ${{ env.NEXT_SERVER }}'
+          tag: ${{ env.NEXT_SERVER }}
           push: true

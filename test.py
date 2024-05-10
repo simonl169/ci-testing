@@ -37,6 +37,8 @@ def parse_version_bump():
         return "minor"
     elif args.server == "patch":
         return "patch"
+    elif args.server == "False":
+        return "None"
     else:
         return "None"
 
@@ -51,6 +53,8 @@ def bump_version(current_major: str, current_minor: str, current_patch: str, bum
         next_minor = str(int(next_minor) + 1)
     elif bump == "patch":
         next_patch = str(int(next_patch) + 1)
+    elif bump == "False":
+        pass
 
     return next_major, next_minor, next_patch
 
